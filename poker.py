@@ -1,3 +1,6 @@
+import re
+
+
 class Card():
     def __init__(self, rank, suit):
         self.rank = rank
@@ -45,6 +48,7 @@ class Hand():
 def who_win():
     player_one_hand = input("Digite a mão do primeiro jogador: ")
     player_two_hand = input("Digite a mão do segundo jogador: ")
+    pattern = r""
     if player_one_hand and player_two_hand:
         player_one = Hand(player_one_hand.split(" "))
         player_two = Hand(player_two_hand.split(" "))
