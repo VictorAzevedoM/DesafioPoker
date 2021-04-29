@@ -8,11 +8,11 @@ class Card():
         self.suit = suit
 
     def ranks(self):
-        if self.rank == "1":
-            self.rank = "10"
-        pattern = r"([2-9]|10|A|Q|K|J)"
+        pattern = r"([2-9]|T|A|Q|K|J)"
         if bool(re.match(pattern, self.rank)):
-            if self.rank == "J":
+            if self.rank == "T":
+                self.rank == "10"
+            elif self.rank == "J":
                 self.rank = "11"
             elif self.rank == "Q":
                 self.rank = "12"
@@ -53,12 +53,10 @@ class Hand():
         self.hand = hand
         self.type_of_hand = ""
         self.value_of_hand = 0
+        self.highest_value_of_combination = 0
         self.cards = []
         for card in self.hand:
-            if len(card) == 2:
-                card = Card(rank=card[0], suit=card[1])
-            else:
-                card = Card(rank=card[0], suit=card[2])
+            card = Card(rank=card[0], suit=card[1])
             self.cards.append(card)
 
     def verify_hand(self):
@@ -75,18 +73,22 @@ class Hand():
             elif card_one.is_equal_rank(card_two) and card_one.is_equal_rank(card_three) and card_one.is_equal_rank(card_four):
                 self.type_of_hand = "Four of a kind"
                 self.value_of_hand = 7
+                self.highest_value_of_combination = int(card_one.rank)
                 return True
             elif card_one.is_equal_rank(card_two) and card_three.is_equal_rank(card_four) and not card_one.is_equal_rank(card_three):
                 self.type_of_hand = "Two Pairs"
                 self.value_of_hand = 2
+                self.highest_value_of_combination = int(card_one.rank)
                 return True
             elif card_one.is_equal_rank(card_two) and card_one.is_equal_rank(card_three):
                 self.type_of_hand = "Three of a kind"
                 self.value_of_hand = 3
+                self.highest_value_of_combination = int(card_one.rank)
                 return True
             elif card_one.is_equal_rank(card_two):
                 self.type_of_hand = "Pair"
                 self.value_of_hand = 1
+                self.highest_value_of_combination = int(card_one.rank)
                 return True
             else:
                 return False
@@ -137,12 +139,40 @@ class Hand():
             print(self.type_of_hand)
             print(self.hand)
         elif self.value_of_hand == other_hand.value_of_hand:
-            if self.highest_rank() == other_hand.highest_rank():
-                pass
-            elif self.highest_rank() > other_hand.highest_rank():
-                pass
+            if self.highest_value_of_combination == other_hand.highest_value_of_combination:
+                if self.type_of_hand == "Straight Flush" or self.type_of_hand == "Straight":
+                    print("Empate, ambos jogadores tem uma sequência de cartas igual")
+                    print(self.type_of_hand)
+                    print(self.hand)
+                    print(other_hand.type_of_hand)
+                    print(other_hand.hand)
+                else:
+                    while self.highest_rank() == other_hand.highest_rank():
+                        self.cards.pop(self.highest_rank())
+                        other_hand.cards.pop(other_hand.highest_rank())
+                    if self.highest_rank() > other_hand.highest_rank():
+                        print("O primeiro jogador venceu com: ")
+                        print(self.type_of_hand)
+                        print(self.hand)
+                    else:
+                        print("O segundo jogador venceu com: ")
+                        print(other_hand.type_of_hand)
+                        print(other_hand.hand)
+
+            elif self.highest_value_of_combination > other_hand.highest_value_of_combination:
+                print("O primeiro jogador venceu com: ")
+                print(self.type_of_hand)
+                print(self.hand)
+            elif self.type_of_hand == "Royal Flush":
+                print("Empate, ambos jogadores tem um Royal Flush")
+                print(self.type_of_hand)
+                print(self.hand)
+                print(other_hand.type_of_hand)
+                print(other_hand.hand)
             else:
-                pass
+                print("O segundo jogador venceu com: ")
+                print(other_hand.type_of_hand)
+                print(other_hand.hand)
         else:
             print("O segundo jogador venceu com: ")
             print(other_hand.type_of_hand)
@@ -161,7 +191,7 @@ class Hand():
 def who_win():
     player_one_hand = input("Digite a mão do primeiro jogador: ")
     player_two_hand = input("Digite a mão do segundo jogador: ")
-    pattern = r"(\w{2,3}\s){4}(\w{2})"
+    pattern = r"(\w{2}\s){4}(\w{2})"
     if bool(re.match(pattern, player_one_hand)) and bool(re.match(pattern, player_two_hand)):
         player_one = Hand(player_one_hand.split(" "))
         player_two = Hand(player_two_hand.split(" "))
