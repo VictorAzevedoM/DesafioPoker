@@ -133,6 +133,14 @@ class Hand():
         else:
             return False
 
+    def valorize_hand(self):
+        self.even()
+        self.highest_rank()
+        self.straight()
+        self.flush()
+        if self.value_of_hand == 0:
+            self.type_of_hand = "Highest rank"
+
     def compare_hands(self, other_hand):
         if self.value_of_hand > other_hand.value_of_hand:
             print("O primeiro jogador venceu com: ")
@@ -177,15 +185,6 @@ class Hand():
             print("O segundo jogador venceu com: ")
             print(other_hand.type_of_hand)
             print(other_hand.hand)
-
-    def valorize_hand(self):
-        self.even()
-        self.highest_rank()
-        self.straight()
-        self.flush()
-        if self.value_of_hand == 0:
-            self.type_of_hand = "Highest rank"
-        print(self.type_of_hand)
 
 
 def who_win():
